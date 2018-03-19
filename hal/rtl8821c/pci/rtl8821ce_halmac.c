@@ -28,7 +28,11 @@ static u8 pci_write_port_not_xmitframe(void *d,  u32 size, u8 *pBuf)
 	struct pci_dev *pdev = pobj->ppcidev;
 	PADAPTER padapter = dvobj_get_primary_adapter(pobj);
 	u8 *txbd;
-	u64 txbd_dma;
+	#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)))
+		dma_addr_t txbd_dma;
+	#else
+		u64 txbd_dma;
+	#endif
 	u8 ret = _SUCCESS;
 	dma_addr_t mapping;
 

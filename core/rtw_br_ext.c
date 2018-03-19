@@ -20,6 +20,11 @@
 #define _RTW_BR_EXT_C_
 
 #ifdef __KERNEL__
+    #include <linux/version.h>
+    #if ((LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)))
+        #include <linux/netfilter.h>
+    #endif
+
 	#include <linux/if_arp.h>
 	#include <net/ip.h>
 	#include <net/ipx.h>
