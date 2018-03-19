@@ -1,0 +1,3 @@
+alias pci:v000010ECd0000C82Bsv*sd*bc*sc*i* rtl8821ce
+alias pci:v000010ECd0000C82Asv*sd*bc*sc*i* rtl8821ce
+alias pci:v000010ECd0000C821sv*sd*bc*sc*i* rtl8821ce

@@ -1,0 +1,16 @@
+Source: rtl8821ce
+Section: kernel
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: debhelper (>= 9), dkms, dh-modaliases
+Standards-Version: 3.9.6
+Homepage: http://www.realtek.com.tw/
+
+Package: rtl8821ce-dkms
+Architecture: all
+Depends: ${misc:Depends}, dkms, linux-libc-dev, libc6-dev
+XB-Modaliases: ${modaliases}
+Description: dkms source for the rtl8821ce network driver
+ .
+ This package provides the dkms source code for the rtl8821ce kernel module.
+ Kernel source or headers are required to compile these modules.

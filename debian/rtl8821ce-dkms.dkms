@@ -1,0 +1,7 @@
+PACKAGE_NAME="rtl8821ce"
+PACKAGE_VERSION="#MODULE_VERSION#"
+BUILT_MODULE_NAME[0]="rtl8821ce"
+MAKE[0]="'make' KVER=${kernelver} KSRC=/lib/modules/${kernelver}/build USER_MODULE_NAME=$PACKAGE_NAME"
+CLEAN="make clean"
+DEST_MODULE_LOCATION[0]="/updates/dkms"
+AUTOINSTALL="yes"
