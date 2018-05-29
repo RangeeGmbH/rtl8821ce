@@ -1,3 +1,9 @@
+rtl8821ce (5.2.5.1.26055.20180108-0rangeeos2) rangeeos; urgency=medium
+
+  * Support for Kernel 4.15
+
+ -- René Vögeli <rvoegeli@rangee.com>  Tue, 29 May 2018 10:20:50 +0200
+
 rtl8821ce (5.2.5.1.26055.20180108-0rangeeos1) rangeeos; urgency=medium
 
   * 5.2.5.1.26055.20180108

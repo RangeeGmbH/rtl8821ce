@@ -271,11 +271,12 @@ static void rtl8821ce_rx_mpdu(_adapter *padapter)
 
 				rtw_recv_entry(precvframe);
 			} else {
-				if (pattrib->pkt_rpt_type == C2H_PACKET)
+				if (pattrib->pkt_rpt_type == C2H_PACKET) {
 
 					/*To be checked for 8821CE*/
 					c2h_pre_handler_rtl8821c(padapter, skb->data, HALMAC_RX_DESC_SIZE_8821C + pattrib->pkt_len);
 					rtw_free_recvframe(precvframe, pfree_recv_queue);
+				}
 			}
 			*((dma_addr_t *) skb->cb) =
 				pci_map_single(pdvobjpriv->ppcidev,
