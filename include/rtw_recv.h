@@ -115,7 +115,6 @@ struct recv_reorder_ctrl {
 
 struct	stainfo_rxcache	{
 	u16	tid_rxseq[16];
-	u8 iv[16][8];
 #if 0
 	unsigned short	tid0_rxseq;
 	unsigned short	tid1_rxseq;
@@ -448,7 +447,7 @@ struct recv_priv {
 	struct sk_buff_head rx_skb_queue;
 #ifdef CONFIG_RTW_NAPI
 		struct sk_buff_head rx_napi_skb_queue;
-#endif 
+#endif
 #ifdef CONFIG_RX_INDICATE_QUEUE
 	struct task rx_indicate_tasklet;
 	struct ifqueue rx_indicate_queue;
@@ -668,7 +667,7 @@ sint rtw_enqueue_recvbuf_to_head(struct recv_buf *precvbuf, _queue *queue);
 sint rtw_enqueue_recvbuf(struct recv_buf *precvbuf, _queue *queue);
 struct recv_buf *rtw_dequeue_recvbuf(_queue *queue);
 
-void rtw_reordering_ctrl_timeout_handler(void *pcontext);
+void rtw_reordering_ctrl_timeout_handler(struct timer_list *t);
 
 void rx_query_phy_status(union recv_frame *rframe, u8 *phy_stat);
 int rtw_inc_and_chk_continual_no_rx_packet(struct sta_info *sta, int tid_index);

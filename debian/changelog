@@ -1,3 +1,10 @@
+rtl8821ce (5.2.5.1.26055.20180108.1-0rangeeos1) rangeeos; urgency=medium
+
+  * Support for Kernel up to 5.1
+  * Diffed against https://github.com/tomaspinho/rtl8821ce
+
+ -- René Vögeli <rvoegeli@rangee.com>  Fri, 26 Apr 2019 11:08:50 +0200
+
 rtl8821ce (5.2.5.1.26055.20180108-0rangeeos2) rangeeos; urgency=medium
 
   * Support for Kernel 4.15

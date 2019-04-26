@@ -46,7 +46,7 @@ phydm_la_buffer_allocate(
 		} else {
 			adc_smp_buf->length = adc_smp_buf->buffer_size;
 			ret = true;
-	}
+	  }
 	}
 
 	return ret;
@@ -319,7 +319,7 @@ phydm_adc_smp_start(
 	if (adc_smp->la_count == 0) {
 		dbg_print("LA Dump finished ---------->\n\n\n");
 		phydm_release_bb_dbg_port(p_dm_odm);
-		
+
 		if ((p_dm_odm->support_ic_type & ODM_RTL8821C) && (p_dm_odm->cut_version >= ODM_CUT_B)) {
 			odm_set_bb_reg(p_dm_odm, 0x95c, BIT(23), 0);
 		}
@@ -595,7 +595,7 @@ phydm_la_mode_bb_setting(
 	if (phydm_set_bb_dbg_port(p_dm_odm, BB_DBGPORT_PRIORITY_3, dbg_port)) {
 		dbg_print("Set dbg_port((0x%x)) success\n", dbg_port);
 	}
-	
+
 	if (p_dm_odm->support_ic_type & ODM_IC_11AC_SERIES) {
 
 		if (trig_mode == PHYDM_ADC_RF0_TRIG)
@@ -607,7 +607,7 @@ phydm_la_mode_bb_setting(
 
 		phydm_bb_dbg_port_header_sel(p_dm_odm, dbg_port_header_sel);
 
-		
+
 		odm_set_bb_reg(p_dm_odm, 0x95C, 0x1f, trig_sig_sel);	/*0x95C[4:0], BB debug port bit*/
 		odm_set_bb_reg(p_dm_odm, 0x95C, BIT(31), is_trigger_edge); /*0: posedge, 1: negedge*/
 		odm_set_bb_reg(p_dm_odm, 0x95c, 0xe0, sampling_rate);
@@ -625,7 +625,7 @@ phydm_la_mode_bb_setting(
 		}
 	} else {
 		odm_set_bb_reg(p_dm_odm, 0x9a0, 0x1f, trig_sig_sel);	/*0x9A0[4:0], BB debug port bit*/
-		
+
 		odm_set_bb_reg(p_dm_odm, 0x9A0, BIT(31), is_trigger_edge); /*0: posedge, 1: negedge*/
 		odm_set_bb_reg(p_dm_odm, 0x9A0, 0xe0, sampling_rate);
 		/*	(0:) '80MHz'

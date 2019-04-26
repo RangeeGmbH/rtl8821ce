@@ -104,10 +104,6 @@
 		typedef _Bool bool;
 	#endif
 
-	#if ((LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)) && (LINUX_VERSION_CODE < KERNEL_VERSION(4, 11, 0)))
-    	#include <linux/netfilter.h>
-    #endif
-
 	typedef void (*proc_t)(void *);
 
 	typedef	__kernel_size_t	SIZE_T;

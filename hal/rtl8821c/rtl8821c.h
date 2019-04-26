@@ -42,14 +42,6 @@ void rtl8821c_init_default_value(PADAPTER);
 u8 rtl8821c_phy_init(PADAPTER adapter);
 u8 rtl8821c_init_phy_parameter_mac(PADAPTER adapter);
 
-
-#ifdef CONFIG_AMPDU_PRETX_CD
-#define BIT_PRETXERR_HANDLE_IMR	BIT(31)
-#define BIT_PRETXERR_HANDLE_ISR	BIT(31)
-#define BIT_PRETXERR			BIT(7)
-void rtl8821c_pretx_cd_config(_adapter *adapter);
-#endif
-
 /* rtl8821c_mac.c */
 u8 rtl8821c_rcr_config(PADAPTER, u32 rcr);
 u8 rtl8821c_rcr_get(PADAPTER, u32 *rcr);

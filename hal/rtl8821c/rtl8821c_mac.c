@@ -219,37 +219,3 @@ s32 rtl8821c_fw_mem_dl(PADAPTER adapter, enum fw_mem mem)
 
 }
 
-#ifdef CONFIG_AMPDU_PRETX_CD
-#include "rtl8821c.h"
-#define AMPDU_NUMBER			0x3F3F /*MAX AMPDU Number = 63*/
-#define REG_PRECNT_CTRL_8821C		0x04E5
-#define BIT_EN_PRECNT_8821C		BIT(11)
-#define PRECNT_TH			0x1E4 /*6.05us*/
-
-/* pre-tx count-down mechanism */
-void rtl8821c_pretx_cd_config(_adapter *adapter)
-{
-	u8 burst_mode;
-	u16 pre_cnt = PRECNT_TH | BIT_EN_PRECNT_8821C;
-
-	/*Enable AMPDU PRE-TX, Reg0x4BC[6] = 1*/
-	burst_mode = rtw_read8(adapter, REG_SW_AMPDU_BURST_MODE_CTRL_8821C);
-	if (!(burst_mode & BIT_PRE_TX_CMD_8821C)) {
-		burst_mode |= BIT_PRE_TX_CMD_8821C;
-		rtw_write8(adapter, REG_SW_AMPDU_BURST_MODE_CTRL_8821C, burst_mode);
-	}
-	/*MAX AMPDU Number = 63, Reg0x4C8[21:16] = 0x3F*/
-	rtw_write16(adapter, REG_PROT_MODE_CTRL_8821C + 2, AMPDU_NUMBER);
-
-	/*Reg0x4E5[11] = 1, Reg0x4E5[10:0] = 0x1E4 */
-	rtw_write8(adapter, REG_PRECNT_CTRL_8821C, (u8)(pre_cnt & 0xFF));
-	rtw_write8(adapter, (REG_PRECNT_CTRL_8821C + 1), (u8)(pre_cnt >> 8));
-
-	#if (defined(DBG_PRE_TX_HANG) && (defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI)))
-	rtw_write32(adapter, REG_HIMR1_8821C ,
-		(rtw_read32(adapter, REG_HIMR1_8821C) | BIT_PRETXERR_HANDLE_IMR));
-	#endif
-}
-
-#endif
-

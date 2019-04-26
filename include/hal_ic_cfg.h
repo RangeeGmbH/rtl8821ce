@@ -208,8 +208,6 @@
 	#define CONFIG_FW_MULTI_PORT_SUPPORT
 	#endif
 	#define CONFIG_SUPPORT_FIFO_DUMP
-	#define CONFIG_AMPDU_PRETX_CD
-	/*#define DBG_PRE_TX_HANG*/
 #endif
 
 #endif /*__HAL_IC_CFG_H__*/

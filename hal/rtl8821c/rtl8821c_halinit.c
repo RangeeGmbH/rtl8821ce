@@ -264,10 +264,6 @@ void rtl8821c_hal_init_misc(PADAPTER adapter)
 #endif /* CONFIG_TX_MCAST2UNI */
 #endif /* CONFIG_CONCURRENT_MODE || CONFIG_TX_MCAST2UNI */
 
-#ifdef CONFIG_AMPDU_PRETX_CD
-	rtl8821c_pretx_cd_config(adapter);
-#endif
-
 }
 
 u32 rtl8821c_hal_init(PADAPTER adapter)

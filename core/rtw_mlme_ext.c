@@ -1333,8 +1333,8 @@ void init_mlme_ext_timer(_adapter *padapter)
 {
 	struct	mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
 
-	rtw_init_timer(&pmlmeext->survey_timer, padapter, survey_timer_hdl, padapter);
-	rtw_init_timer(&pmlmeext->link_timer, padapter, link_timer_hdl, padapter);
+	rtw_init_timer(&pmlmeext->survey_timer, padapter, survey_timer_hdl);
+	rtw_init_timer(&pmlmeext->link_timer, padapter, link_timer_hdl);
 #ifdef CONFIG_RTW_80211R
 	rtw_init_timer(&pmlmeext->ft_link_timer, padapter, ft_link_timer_hdl, padapter);
 	rtw_init_timer(&pmlmeext->ft_roam_timer, padapter, ft_roam_timer_hdl, padapter);
@@ -1933,10 +1933,10 @@ static void rtw_check_legacy_ap(_adapter *padapter, u8 *pframe, u32 len)
 
 	if (!padapter->registrypriv.wifi_spec)
 		return;
-	
+
 	if(!MLME_IS_AP(padapter))
 		return;
-	
+
 
 	if (pmlmeext->bstart_bss == _TRUE) {
 		int left;
@@ -1944,7 +1944,7 @@ static void rtw_check_legacy_ap(_adapter *padapter, u8 *pframe, u32 len)
 		unsigned char *pos;
 		struct rtw_ieee802_11_elems elems;
 		struct HT_info_element *pht_info = NULL;
-		u16 cur_op_mode; 
+		u16 cur_op_mode;
 
 		/* checking IEs */
 		left = len - sizeof(struct rtw_ieee80211_hdr_3addr) - _BEACON_IE_OFFSET_;
@@ -1965,7 +1965,7 @@ static void rtw_check_legacy_ap(_adapter *padapter, u8 *pframe, u32 len)
 			ATOMIC_SET(&pmlmepriv->olbc, _TRUE);
 			ATOMIC_SET(&pmlmepriv->olbc_ht, _TRUE);
 		}
-			
+
 	}
 }
 
@@ -3608,12 +3608,12 @@ u8 rtw_rx_ampdu_size(_adapter *adapter)
 		max_rx_ampdu_factor = (HT_CAP_AMPDU_FACTOR)adapter->driver_rx_ampdu_factor;
 	else
 		rtw_hal_get_def_var(adapter, HW_VAR_MAX_RX_AMPDU_FACTOR, &max_rx_ampdu_factor);
-	
+
 	/* In Maximum A-MPDU Length Exponent subfield of A-MPDU Parameters field of HT Capabilities element,
 		the unit of max_rx_ampdu_factor are octets. 8K, 16K, 32K, 64K is right.
 		But the buffer size subfield of Block Ack Parameter Set field in ADDBA action frame indicates
-		the number of buffers available for this particular TID. Each buffer is equal to max. size of 
-		MSDU or AMSDU. 
+		the number of buffers available for this particular TID. Each buffer is equal to max. size of
+		MSDU or AMSDU.
 		The size variable means how many MSDUs or AMSDUs, it's not Kbytes.
 	*/
 	if (MAX_AMPDU_FACTOR_64K == max_rx_ampdu_factor)
@@ -12322,9 +12322,9 @@ void rtw_delba_check(_adapter *padapter, struct sta_info *psta, u8 from_timer)
 	*/
 	if (pmlmeinfo->assoc_AP_vendor == HT_IOT_PEER_BROADCOM) {
 		for (i = 0; i < TID_NUM ; i++) {
-			if ((psta->recvreorder_ctrl[i].enable) && 
-                        (sta_rx_data_qos_pkts(psta, i) == sta_last_rx_data_qos_pkts(psta, i)) ) {			
-					if (_TRUE == rtw_inc_and_chk_continual_no_rx_packet(psta, i)) {					
+			if ((psta->recvreorder_ctrl[i].enable) &&
+                        (sta_rx_data_qos_pkts(psta, i) == sta_last_rx_data_qos_pkts(psta, i)) ) {
+					if (_TRUE == rtw_inc_and_chk_continual_no_rx_packet(psta, i)) {
 						/* send a DELBA frame to the peer STA with the Reason Code field set to TIMEOUT */
 						if (!from_timer)
 							ret = issue_del_ba_ex(padapter, psta->hwaddr, i, 39, 0, 3, 1);
@@ -12334,7 +12334,7 @@ void rtw_delba_check(_adapter *padapter, struct sta_info *psta, u8 from_timer)
 						if (ret != _FAIL)
 							psta->recvreorder_ctrl[i].ampdu_size = RX_AMPDU_SIZE_INVALID;
 						rtw_reset_continual_no_rx_packet(psta, i);
-					}				
+					}
 			} else {
 				/* The inactivity timer is reset when MPDUs to the TID is received. */
 				rtw_reset_continual_no_rx_packet(psta, i);
@@ -12617,7 +12617,7 @@ void linked_status_chk(_adapter *padapter, u8 from_timer)
 			is_p2p_enable = !rtw_p2p_chk_state(&padapter->wdinfo, P2P_STATE_NONE);
 #endif
 
-#ifdef CONFIG_ISSUE_DELBA_WHEN_NO_TRAFFIC 
+#ifdef CONFIG_ISSUE_DELBA_WHEN_NO_TRAFFIC
 			/*issue delba when ap does not tx data packet that is Broadcom ap */
 			rtw_delba_check(padapter, psta, from_timer);
 #endif
@@ -12760,13 +12760,13 @@ bypass_active_keep_alive:
 
 }
 
-void survey_timer_hdl(void *ctx)
+void survey_timer_hdl(struct timer_list *t)
 {
-	_adapter *padapter = (_adapter *)ctx;
+	struct mlme_ext_priv    *pmlmeext = from_timer(pmlmeext, t, survey_timer);
+	_adapter *padapter = container_of(pmlmeext, _adapter, mlmeextpriv);
 	struct cmd_obj *cmd;
 	struct sitesurvey_parm *psurveyPara;
 	struct cmd_priv *pcmdpriv = &padapter->cmdpriv;
-	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
 #ifdef CONFIG_P2P
 	struct wifidirect_info *pwdinfo = &(padapter->wdinfo);
 #endif
@@ -12793,13 +12793,13 @@ exit:
 	return;
 }
 
-void link_timer_hdl(void *ctx)
+void link_timer_hdl(struct timer_list *t)
 {
-	_adapter *padapter = (_adapter *)ctx;
+	struct mlme_ext_priv    *pmlmeext = from_timer(pmlmeext, t, link_timer);
+	_adapter *padapter = container_of(pmlmeext, _adapter, mlmeextpriv);
 	/* static unsigned int		rx_pkt = 0; */
 	/* static u64				tx_cnt = 0; */
 	/* struct xmit_priv		*pxmitpriv = &(padapter->xmitpriv); */
-	struct mlme_ext_priv	*pmlmeext = &padapter->mlmeextpriv;
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 	/* struct sta_priv		*pstapriv = &padapter->stapriv; */
 #ifdef CONFIG_RTW_80211R
@@ -12867,9 +12867,9 @@ void link_timer_hdl(void *ctx)
 	return;
 }
 
-void addba_timer_hdl(void *ctx)
+void addba_timer_hdl(struct timer_list *t)
 {
-	struct sta_info *psta = (struct sta_info *)ctx;
+	struct sta_info *psta = from_timer(psta, t, addba_retry_timer);
 
 #ifdef CONFIG_80211N_HT
 	struct ht_priv	*phtpriv;

@@ -1,3 +1,5 @@
 Based on original Realtek RTL8821CE driver rtl8821CE_WiFi_linux_v5.2.5.1_26055.20180108_COEX20170310-1212
 
 downloaded from https://bugs.launchpad.net/ubuntu/+source/linux-oem/+bug/1740231/comments/2
+
+with updates taken from https://github.com/tomaspinho/rtl8821ce
