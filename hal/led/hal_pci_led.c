@@ -787,7 +787,11 @@ void BlinkHandler(PLED_PCIE pLed)
  *   */
 void BlinkTimerCallback(struct timer_list *t)
 {
-	PLED_PCIE	 pLed = from_timer(pLed, t, BlinkTimer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	PLED_PCIE	pLed = from_timer(pLed, t, BlinkTimer);
+#else
+	PLED_PCIE	pLed = container_of(t, typeof(*pLed), BlinkTimer);
+#endif
 	_adapter		*padapter = pLed->padapter;
 
 	/* RTW_INFO("%s\n", __FUNCTION__); */

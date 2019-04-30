@@ -2779,7 +2779,11 @@ void rtw_join_timeout(struct mlme_priv *pmlmepriv)
 }
 
 void rtw_join_timeout_handler(struct timer_list *t) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
 	struct	mlme_priv *pmlmepriv = from_timer(pmlmepriv, t, assoc_timer);
+#else
+	struct	mlme_priv *pmlmepriv = container_of(t, typeof(*pmlmepriv), assoc_timer);
+#endif
 	rtw_join_timeout(pmlmepriv);
 }
 
@@ -2789,7 +2793,11 @@ void rtw_join_timeout_handler(struct timer_list *t) {
 */
 void rtw_scan_timeout_handler(struct timer_list *t)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
 	struct	mlme_priv *pmlmepriv = from_timer(pmlmepriv, t, scan_to_timer);
+#else
+	struct	mlme_priv *pmlmepriv = container_of(t, typeof(*pmlmepriv), scan_to_timer);
+#endif
 	_adapter *adapter = container_of(pmlmepriv, _adapter, mlmepriv);
 	_irqL irqL;
 	RTW_INFO(FUNC_ADPT_FMT" fw_state=%x\n", FUNC_ADPT_ARG(adapter), get_fwstate(pmlmepriv));
@@ -3056,7 +3064,12 @@ static void collect_traffic_statistics(_adapter *padapter)
 
 void rtw_dynamic_check_timer_handlder(struct timer_list *t)
 {
-	struct dvobj_priv *pdvobj = from_timer(pdvobj, t, dynamic_chk_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	dvobj_priv *pdvobj = from_timer(pdvobj, t, dynamic_chk_timer);
+#else
+	struct	dvobj_priv *pdvobj = container_of(t, typeof(*pdvobj), dynamic_chk_timer);
+#endif
+
 	_adapter *adapter = dvobj_get_primary_adapter(pdvobj);
 
 #if (MP_DRIVER == 1)
@@ -3104,7 +3117,12 @@ inline void rtw_clear_scan_deny(_adapter *adapter)
 
 void rtw_set_scan_deny_timer_hdl(struct timer_list *t)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
 	struct	mlme_priv *pmlmepriv = from_timer(pmlmepriv, t, set_scan_deny_timer);
+#else
+	struct	mlme_priv *pmlmepriv = container_of(t, typeof(*pmlmepriv), set_scan_deny_timer);
+#endif
+
 	_adapter *adapter = container_of(pmlmepriv, _adapter, mlmepriv);
 
 	rtw_clear_scan_deny(adapter);

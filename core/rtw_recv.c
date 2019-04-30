@@ -3216,7 +3216,11 @@ _err_exit:
 void rtw_reordering_ctrl_timeout_handler(struct timer_list *t)
 {
 	_irqL irql;
-	struct recv_reorder_ctrl *preorder_ctrl = from_timer(preorder_ctrl, t, reordering_ctrl_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	recv_reorder_ctrl *preorder_ctrl = from_timer(preorder_ctrl, t, reordering_ctrl_timer);
+#else
+	struct	recv_reorder_ctrl *preorder_ctrl = container_of(t, typeof(*preorder_ctrl), reordering_ctrl_timer);
+#endif
 	_adapter *padapter = preorder_ctrl->padapter;
 	_queue *ppending_recvframe_queue = &preorder_ctrl->pending_recvframe_queue;
 
@@ -4222,7 +4226,11 @@ _recv_entry_drop:
 #ifdef CONFIG_NEW_SIGNAL_STAT_PROCESS
 static void rtw_signal_stat_timer_hdl(struct timer_list *t)
 {
-	struct recv_priv *recvpriv = from_timer(recvpriv, t, signal_stat_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	recv_priv *recvpriv = from_timer(recvpriv, t, signal_stat_timer);
+#else
+	struct	recv_priv *recvpriv = container_of(t, typeof(*recvpriv), signal_stat_timer);
+#endif
 	_adapter *adapter = container_of(recvpriv, _adapter, recvpriv);
 
 	u32 tmp_s, tmp_q;

@@ -395,7 +395,11 @@ exit:
 
 void pwr_state_check_handler(struct timer_list *t)
 {
-	struct pwrctrl_priv *pwrpriv = from_timer(pwrpriv, t, pwr_state_check_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	pwrctrl_priv *pwrpriv = from_timer(pwrpriv, t, pwr_state_check_timer);
+#else
+	struct	pwrctrl_priv *pwrpriv = container_of(t, typeof(*pwrpriv), pwr_state_check_timer);
+#endif
 	struct dvobj_priv *dvobj = pwrctl_to_dvobj(pwrpriv);
 	_adapter *padapter = dvobj_get_primary_adapter(dvobj);
 	rtw_ps_cmd(padapter);

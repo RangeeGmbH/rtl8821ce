@@ -3357,7 +3357,11 @@ exit:
 
 static void ro_ch_timer_process(struct timer_list *t)
 {
-	struct cfg80211_wifidirect_info *pcfg80211_wdinfo = from_timer(pcfg80211_wdinfo, t, remain_on_ch_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	cfg80211_wifidirect_info *pcfg80211_wdinfo = from_timer(pcfg80211_wdinfo, t, remain_on_ch_timer);
+#else
+	struct	cfg80211_wifidirect_info *pcfg80211_wdinfo = container_of(t, typeof(*pcfg80211_wdinfo), remain_on_ch_timer);
+#endif
 	_adapter *adapter = container_of(pcfg80211_wdinfo, _adapter, cfg80211_wdinfo);
 
 	p2p_cancel_roch_cmd(adapter, 0, NULL, 0);
@@ -4540,7 +4544,11 @@ static void __reset_ch_sitesurvey_timer_process(struct wifidirect_info *pwdinfo)
 
 static void reset_ch_sitesurvey_timer_process(struct timer_list *t)
 {
-	struct	wifidirect_info		*pwdinfo = from_timer(pwdinfo, t, reset_ch_sitesurvey);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	wifidirect_info *pwdinfo = from_timer(pwdinfo, t, reset_ch_sitesurvey);
+#else
+	struct	wifidirect_info *pwdinfo = container_of(t, typeof(*pwdinfo), reset_ch_sitesurvey);
+#endif
 	__reset_ch_sitesurvey_timer_process(pwdinfo);
 }
 
@@ -4564,13 +4572,21 @@ static void __reset_ch_sitesurvey_timer_process2(struct wifidirect_info *pwdinfo
 
 static void reset_ch_sitesurvey_timer_process2(struct timer_list *t)
 {
-	struct	wifidirect_info		*pwdinfo = from_timer(pwdinfo, t, reset_ch_sitesurvey2);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	wifidirect_info *pwdinfo = from_timer(pwdinfo, t, reset_ch_sitesurvey2);
+#else
+	struct	wifidirect_info *pwdinfo = container_of(t, typeof(*pwdinfo), reset_ch_sitesurvey2);
+#endif
 	__reset_ch_sitesurvey_timer_process2(pwdinfo);
 }
 
 static void restore_p2p_state_timer_process(struct timer_list *t)
 {
-	struct	wifidirect_info		*pwdinfo = from_timer(pwdinfo, t, restore_p2p_state_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	wifidirect_info *pwdinfo = from_timer(pwdinfo, t, restore_p2p_state_timer);
+#else
+	struct	wifidirect_info *pwdinfo = container_of(t, typeof(*pwdinfo), restore_p2p_state_timer);
+#endif
 	_adapter *adapter = container_of(pwdinfo, _adapter, wdinfo);
 
 	if (rtw_p2p_chk_state(pwdinfo, P2P_STATE_NONE))
@@ -4581,7 +4597,11 @@ static void restore_p2p_state_timer_process(struct timer_list *t)
 
 static void pre_tx_scan_timer_process(struct timer_list *t)
 {
-	struct	wifidirect_info		*pwdinfo = from_timer(pwdinfo, t, pre_tx_scan_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	wifidirect_info *pwdinfo = from_timer(pwdinfo, t, pre_tx_scan_timer);
+#else
+	struct	wifidirect_info *pwdinfo = container_of(t, typeof(*pwdinfo), pre_tx_scan_timer);
+#endif
 	_adapter *adapter = container_of(pwdinfo, _adapter, wdinfo);
 	_irqL							irqL;
 	struct mlme_priv					*pmlmepriv = &adapter->mlmepriv;
@@ -4613,7 +4633,11 @@ static void pre_tx_scan_timer_process(struct timer_list *t)
 
 static void find_phase_timer_process(struct timer_list *t)
 {
-	struct	wifidirect_info		*pwdinfo = from_timer(pwdinfo, t, find_phase_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	wifidirect_info *pwdinfo = from_timer(pwdinfo, t, find_phase_timer);
+#else
+	struct	wifidirect_info *pwdinfo = container_of(t, typeof(*pwdinfo), find_phase_timer);
+#endif
 	_adapter *adapter = container_of(pwdinfo, _adapter, wdinfo);
 
 	if (rtw_p2p_chk_state(pwdinfo, P2P_STATE_NONE))

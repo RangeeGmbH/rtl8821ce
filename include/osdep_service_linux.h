@@ -291,9 +291,9 @@ __inline static void rtw_list_delete(_list *plist)
 __inline static void _init_timer(_timer *ptimer, _nic_hdl nic_hdl, void *pfunc)
 {
 	#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 15, 0)
-	/* setup_timer(ptimer, pfunc,(u32)cntx);	 */
+	/* setup_timer(ptimer, pfunc, 0);	 */
 	ptimer->function = pfunc;
-	ptimer->data = (unsigned long)cntx;
+	ptimer->data = 0;
 	init_timer(ptimer);
 	#else
 	timer_setup(ptimer, pfunc, 0);

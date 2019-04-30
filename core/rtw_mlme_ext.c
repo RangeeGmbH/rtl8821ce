@@ -12762,7 +12762,11 @@ bypass_active_keep_alive:
 
 void survey_timer_hdl(struct timer_list *t)
 {
-	struct mlme_ext_priv    *pmlmeext = from_timer(pmlmeext, t, survey_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	mlme_ext_priv *pmlmeext = from_timer(pmlmeext, t, survey_timer);
+#else
+	struct	mlme_ext_priv *pmlmeext = container_of(t, typeof(*pmlmeext), survey_timer);
+#endif
 	_adapter *padapter = container_of(pmlmeext, _adapter, mlmeextpriv);
 	struct cmd_obj *cmd;
 	struct sitesurvey_parm *psurveyPara;
@@ -12795,7 +12799,11 @@ exit:
 
 void link_timer_hdl(struct timer_list *t)
 {
-	struct mlme_ext_priv    *pmlmeext = from_timer(pmlmeext, t, link_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	mlme_ext_priv *pmlmeext = from_timer(pmlmeext, t, link_timer);
+#else
+	struct	mlme_ext_priv *pmlmeext = container_of(t, typeof(*pmlmeext), link_timer);
+#endif
 	_adapter *padapter = container_of(pmlmeext, _adapter, mlmeextpriv);
 	/* static unsigned int		rx_pkt = 0; */
 	/* static u64				tx_cnt = 0; */
@@ -12869,7 +12877,11 @@ void link_timer_hdl(struct timer_list *t)
 
 void addba_timer_hdl(struct timer_list *t)
 {
-	struct sta_info *psta = from_timer(psta, t, addba_retry_timer);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0)
+	struct	sta_info *psta = from_timer(psta, t, addba_retry_timer);
+#else
+	struct	sta_info *psta = container_of(t, typeof(*psta), addba_retry_timer);
+#endif
 
 #ifdef CONFIG_80211N_HT
 	struct ht_priv	*phtpriv;
