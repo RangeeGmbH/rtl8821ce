@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2013 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2013 - 2017 Realtek Corporation.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -11,18 +11,17 @@
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
  *
- * You should have received a copy of the GNU General Public License along with
- * this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- *
- ******************************************************************************/
-#ifdef CONFIG_BT_COEXIST
-
+ *****************************************************************************/
 #include <drv_types.h>
-#include <hal_btcoex.h>
 #include <hal_data.h>
+#ifdef CONFIG_BT_COEXIST
+#include <hal_btcoex.h>
 
+#ifdef PLATFORM_LINUX
+	#ifndef KERNEL_DS
+		#define KERNEL_DS   MAKE_MM_SEG(-1UL)   // <----- 0xffffffffffffffff
+	#endif
+#endif
 
 void rtw_btcoex_Initialize(PADAPTER padapter)
 {
@@ -32,6 +31,11 @@ void rtw_btcoex_Initialize(PADAPTER padapter)
 void rtw_btcoex_PowerOnSetting(PADAPTER padapter)
 {
 	hal_btcoex_PowerOnSetting(padapter);
+}
+
+void rtw_btcoex_AntInfoSetting(PADAPTER padapter)
+{
+	hal_btcoex_AntInfoSetting(padapter);
 }
 
 void rtw_btcoex_PowerOffSetting(PADAPTER padapter)
@@ -243,6 +247,16 @@ void rtw_btcoex_HaltNotify(PADAPTER padapter)
 void rtw_btcoex_switchband_notify(u8 under_scan, u8 band_type)
 {
 	hal_btcoex_switchband_notify(under_scan, band_type);
+}
+
+void rtw_btcoex_WlFwDbgInfoNotify(PADAPTER padapter, u8* tmpBuf, u8 length)
+{
+	hal_btcoex_WlFwDbgInfoNotify(padapter, tmpBuf, length);
+}
+
+void rtw_btcoex_rx_rate_change_notify(PADAPTER padapter, u8 is_data_frame, u8 rate_id)
+{
+	hal_btcoex_rx_rate_change_notify(padapter, is_data_frame, rate_id);
 }
 
 void rtw_btcoex_SwitchBtTRxMask(PADAPTER padapter)
@@ -499,7 +513,7 @@ u8 rtw_btcoex_get_ant_div_cfg(PADAPTER padapter)
 	PHAL_DATA_TYPE pHalData;
 
 	pHalData = GET_HAL_DATA(padapter);
-	
+
 	return (pHalData->AntDivCfg == 0) ? _FALSE : _TRUE;
 }
 
@@ -1466,15 +1480,24 @@ u8 rtw_btcoex_sendmsgbysocket(_adapter *padapter, u8 *msg, u8 msg_size, bool for
 	udpmsg.msg_control	= NULL;
 	udpmsg.msg_controllen = 0;
 	udpmsg.msg_flags	= MSG_DONTWAIT | MSG_NOSIGNAL;
+
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
 	oldfs = get_fs();
 	set_fs(KERNEL_DS);
+#else
+	oldfs = force_uaccess_begin();
+#endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 1, 0))
 	error = sock_sendmsg(pcoex_info->udpsock, &udpmsg);
 #else
 	error = sock_sendmsg(pcoex_info->udpsock, &udpmsg, msg_size);
 #endif
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
 	set_fs(oldfs);
+#else
+	force_uaccess_end(oldfs);
+#endif
 	if (error < 0) {
 		RTW_INFO("Error when sendimg msg, error:%d\n", error);
 		return _FAIL;
@@ -1734,3 +1757,22 @@ void rtw_btcoex_SendScanNotify(PADAPTER padapter, u8 scanType)
 }
 #endif /* CONFIG_BT_COEXIST_SOCKET_TRX */
 #endif /* CONFIG_BT_COEXIST */
+
+void rtw_btcoex_set_ant_info(PADAPTER padapter)
+{
+#ifdef CONFIG_BT_COEXIST
+	PHAL_DATA_TYPE hal = GET_HAL_DATA(padapter);
+
+	if (hal->EEPROMBluetoothCoexist == _TRUE) {
+		u8 bMacPwrCtrlOn = _FALSE;
+
+		rtw_btcoex_AntInfoSetting(padapter);
+		rtw_hal_get_hwreg(padapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
+		if (bMacPwrCtrlOn == _TRUE)
+			rtw_btcoex_PowerOnSetting(padapter);
+	}
+	else
+#endif
+		rtw_btcoex_wifionly_AntInfoSetting(padapter);
+}
+
